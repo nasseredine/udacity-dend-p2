@@ -1,0 +1,4 @@
+# Ignore the DWH (Data Warehouse) config file
+# Contains access key id and secret access key
+# MUST BE KEPT SECRET AND STAY ON THE LOCAL MACHINE
+dwh.cfg
