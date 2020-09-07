@@ -3,6 +3,18 @@ import psycopg2
 from sql_queries import copy_table_queries, insert_table_queries
 
 
+def redshift_cluster_connect(config):
+    """
+    Connects to the Amazon Redshift cluster and returns `connection` and `cursor` objects (from psycopg2).
+
+    Args:
+        config (dict): The configuration of the Redshift cluster to connect to.
+    """
+    conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
+
+    return conn.cursor(), conn
+
+
 def load_staging_tables(cur, conn):
     """Loads data in the staging tables.
     
@@ -44,8 +56,7 @@ def main():
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
 
-    conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
-    cur = conn.cursor()
+    cur, conn = redshift_cluster_connect(config)
     
     load_staging_tables(cur, conn)
     insert_tables(cur, conn)
