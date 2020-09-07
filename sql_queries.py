@@ -113,11 +113,19 @@ CREATE TABLE IF NOT EXISTS time (
 
 # STAGING TABLES
 
-staging_events_copy = ("""
-""").format()
+staging_events_copy = (f"""
+copy staging_events
+from {config.get('S3', 'LOG_DATA')}
+iam_role {config.get('IAM_ROLE','ARN')}
+format as json {config.get('S3','LOG_JSONPATH')}
+""")
 
-staging_songs_copy = ("""
-""").format()
+staging_songs_copy = (f"""
+copy staging_songs
+from {config.get('S3', 'SONG_DATA')}
+iam_role {config.get('IAM_ROLE','ARN')}
+format as json 'auto'
+""")
 
 # FINAL TABLES
 
