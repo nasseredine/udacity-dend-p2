@@ -4,8 +4,7 @@ from sql_queries import create_table_queries, drop_table_queries
 
 
 def redshift_cluster_connect(config):
-    """
-    Connects to the Amazon Redshift cluster and returns `connection` and `cursor` objects (from psycopg2).
+    """Connects to the Amazon Redshift cluster and returns `connection` and `cursor` objects (from psycopg2).
 
     Args:
         config (dict): The configuration of the Redshift cluster to connect to.
@@ -16,8 +15,7 @@ def redshift_cluster_connect(config):
 
 
 def drop_tables(cur, conn):
-    """
-    Drops each table using the queries in `drop_table_queries` list.
+    """Drops each table using the queries in `drop_table_queries` list.
     """
     for query in drop_table_queries:
         cur.execute(query)
@@ -25,8 +23,7 @@ def drop_tables(cur, conn):
 
 
 def create_tables(cur, conn):
-    """
-    Creates each table using the queries in `create_table_queries` list.
+    """Creates each table using the queries in `create_table_queries` list.
     """
     for query in create_table_queries:
         cur.execute(query)

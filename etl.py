@@ -4,8 +4,7 @@ from sql_queries import copy_table_queries, insert_table_queries
 
 
 def redshift_cluster_connect(config):
-    """
-    Connects to the Amazon Redshift cluster and returns `connection` and `cursor` objects (from psycopg2).
+    """Connects to the Amazon Redshift cluster and returns `connection` and `cursor` objects (from psycopg2).
 
     Args:
         config (dict): The configuration of the Redshift cluster to connect to.
