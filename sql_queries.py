@@ -130,18 +130,68 @@ format as json 'auto'
 # FINAL TABLES
 
 songplay_table_insert = ("""
+INSERT INTO SONGPLAYS (
+    start_time,
+    user_id,
+    user_membership_level,
+    song_id,
+    artist_id,
+    session_id,
+    location,
+    user_agent
+)
+SELECT
+    TIMESTAMP 'epoch' + se.ts/1000 * interval '1 second',
+    user_id,
+    user_membership_level,
+    song_id,
+    artist_id,
+    session_id,
+    se.artist_location,
+    user_agent
+FROM staging_events AS se
+JOIN staging_songs AS ss
+ON se.song_title = ss.title AND se.artist_name = ss.artist_name AND se.song_duration = ss.duration
+WHERE page = 'NextSong';
 """)
 
 user_table_insert = ("""
+INSERT INTO users (
+SELECT DISTINCT user_id AS uid, user_first_name, user_last_name, user_gender, user_membership_level
+FROM staging_events
+WHERE user_id IS NOT NULL AND page = 'NextSong' AND ts = (SELECT MAX(ts) FROM staging_events WHERE user_id = uid AND page = 'NextSong')
+);
 """)
 
 song_table_insert = ("""
+INSERT INTO songs (
+SELECT song_id, title, artist_id, year, duration
+FROM staging_songs
+WHERE song_id IS NOT NULL
+);
 """)
 
 artist_table_insert = ("""
+INSERT INTO artists (
+SELECT DISTINCT artist_id AS aid, artist_name, artist_location, artist_latitude, artist_longitude
+FROM staging_songs
+WHERE artist_id IS NOT NULL AND year = (SELECT MAX(year) FROM staging_songs WHERE artist_id = aid)
+);
 """)
 
 time_table_insert = ("""
+INSERT INTO time (
+SELECT
+    DISTINCT timestamp 'epoch' + ts/1000 * interval '1 second' AS start_time,
+    EXTRACT(hour FROM start_time),
+    EXTRACT(day FROM start_time),
+    EXTRACT(week FROM start_time),
+    EXTRACT(month FROM start_time),
+    EXTRACT(year FROM start_time),
+    EXTRACT(weekday FROM start_time)
+FROM staging_events
+WHERE ts IS NOT NULL
+);
 """)
 
 # QUERY LISTS
