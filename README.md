@@ -60,7 +60,78 @@ The dimension tables allows us to categorize facts and measures in order to allo
 
 
 
+## ETL pipeline
+
+The main goals of the ETL pipeline were to:
+
+- Extract the data from Amazon S3 (object storage service) and load it into staging tables in Redshift (data warehouse)
+
+- Transform the data and finally,
+
+- Load the data into the analytical tables
+
+
+
+## Getting Started
+
+The following instructions will help you set up the configuration file, create the tables and run the ETL pipeline to populate the analytical tables with the data that is stored in Amazon S3.
+
+
+
+### Prerequisites
+
+#### Python packages
+
+The `psycopg2` package must be installed on your machine. 
+
+Use the [pip](https://pypi.org/project/pip/) package installer to install it:
+
+```shell
+pip3 install psycopg2
+```
+
+#### Data Warehouse configuration file
+
+
+
+Please create an Amazon Redshift cluster and fill the `dwh.cfg` file with the following content:
+
+>[CLUSTER]
+>HOST='datawarehouse_cluster_name.identifier.aws-region.redshift.amazonaws.com'
+>DB_NAME='<datawarehouse_name>'
+>DB_USER='<datawarehouse_user_name>'
+>DB_PASSWORD='<datawarehouse_password>'
+>DB_PORT='<datawarehouse_password_port>'
+>
+>[IAM_ROLE]
+>ARN='arn:aws:iam::<IDENTIFIER>:role/dwhRole'
+>
+>[S3]
+>LOG_DATA='s3://udacity-dend/log_data'
+>LOG_JSONPATH='s3://udacity-dend/log_json_path.json'
+>SONG_DATA='s3://udacity-dend/song_data'
+
+**Note**: The configuration should be kept private.
+
+
+#### Create table and run ETL
+
+1. Create the tables in the Redshift cluster (data warehouse) by running the `create_tables.py` Python 3 script:
+
+```shell
+python3 create_tables.py
+```
+
+2. Run the ETL pipelines to extract the data from Amazon S3 into the staging tables in Redshift, transform and load the data from the staging tables to the analytical tables by running  `etl.py` Python 3 script:
+
+```shell
+python3 etl.py
+```
+
+
+
 ## License
+
 
 **DISCLAIMER:** This project is part of the Data Engineering Nanodegree Program from Udacity. You must abide by [Udacity's Honor of Code](https://udacity.zendesk.com/hc/en-us/articles/210667103-What-is-the-Udacity-Honor-Code-), and in particular, you must submit your own work or attribute my code if you want to use part of my solution.
 
